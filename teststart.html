@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Eye Tracking Software Presentation</title>
+    <style>
+        .buttonStartEyeTrack {
+        background-color: rgb(255, 102, 0);
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        display: block; 
+        margin:auto;
+        font-size: 16px;border-radius: 8px;
+    }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #5a67d8;
+        }
+        p {
+            text-align: center;
+            font-size: 18px;
+        }
+        .iframe-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        iframe {
+            border: 2px solid #5a67d8;
+            border-radius: 10px;
+        }
+        .popup{
+           background-color: rgb(255, 255, 255);
+           width: 450px;
+           height: auto;
+           padding: 30px 40px;
+           position: absolute;
+           transform: translate(-50%, -50%);
+           left: 50%;
+           top: 50%;
+           border-radius:8px;
+           font-family: "Poppins", sans-serif;
+
+        }
+        .popup button{
+            display: block;
+            margin: 40px auto;
+            color: black;
+            width: 160px;
+            height: 40px;
+            background-color: steelblue;
+            font-size: 15px;
+            outline: auto;
+            cursor: pointer;
+        }
+        .popup p {
+            font-size: 14px;
+            text-align: justify;
+            margin: 20px;
+        }
+        .popup h1{
+            color: black;
+            text-align: center;
+            margin: 20PX;
+        }
+ 
+    </style>
+    <script src="https://api.gazerecorder.com/GazeCloudAPI.js?v=1.2" ></script>
+        
+    <script src="https://api.gazerecorder.com/heatmapLive.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    
+    <h1>Eye Tracking Software Demo</h1>
+   <div class="popup">
+    <h1>Notice: Webcam Use Safety Risk</h1>
+    <p>By selecting the "Agree To Terms" button below and continuing, you acknowledge and consent to the collection and use of information obtained through your webcam. This may include, but is not limited to, video, audio, and associated metadata. You understand that while we take appropriate measures to safeguard your data, the use of your webcam may involve risks to your privacy and security. By proceeding, you also agree to our Terms of Service and Privacy Policy. </p>
+    <button id="agree">Agree To Terms</button>
+   </div>
+   
+    <div class="iframe-container">
+        <script type = "text/javascript" > 
+            document.querySelector("#agree").addEventListener("click", function(){
+                document.querySelector(".popup").style.display = "none";});       
+            function PlotGaze(GazeData) {
+            
+                document.getElementById("GazeData").innerHTML = "GazeX: " + GazeData.GazeX + " GazeY: " + GazeData.GazeY;
+                document.getElementById("HeadPhoseData").innerHTML = " HeadX: " + GazeData.HeadX + " HeadY: " + GazeData.HeadY + " HeadZ: " + GazeData.HeadZ;
+                document.getElementById("HeadRotData").innerHTML = " Yaw: " + GazeData.HeadYaw + " Pitch: " + GazeData.HeadPitch + " Roll: " + GazeData.HeadRoll;
+   
+   
+   if( !document.getElementById("ShowHeatMapId").checked) // gaze plot
+   {
+            var x = GazeData.docX;
+            var y = GazeData.docY;
+            
+            var gaze = document.getElementById("gaze");
+            x -= gaze .clientWidth/2;
+            y -= gaze .clientHeight/2;
+            
+            
+   
+       gaze.style.left = x + "px";
+       gaze.style.top = y + "px";
+   
+            
+            if(GazeData.state != 0)
+            {
+                if( gaze.style.display  == 'block')
+                gaze  .style.display = 'none';
+            }
+            else
+            {
+                if( gaze.style.display  == 'none')
+                gaze  .style.display = 'block';
+            }
+            
+   }
+            }
+            
+            //////set callbacks/////////
+      
+   
+   window.addEventListener("load", function() {
+   
+            GazeCloudAPI.OnCalibrationComplete =function(){ShowHeatMap(); console.log('gaze Calibration Complete'); window.location.href = "testwebpage.html";  }
+            GazeCloudAPI.OnCamDenied =  function(){ console.log('camera  access denied')  }
+            GazeCloudAPI.OnError =  function(msg){ console.log('err: ' + msg)  }
+            document.getElementById("pictures").style.display = 'none';
+            GazeCloudAPI.UseClickRecalibration = true;
+              GazeCloudAPI.OnResult = PlotGaze; 
+            });
+   
+   
+   function handleClickHeatMap(cb) {
+    
+   if( cb.checked)
+   {
+       ShowHeatMap();
+        document.getElementById("gaze").style.display = 'none';
+   
+   }
+   else
+        RemoveHeatMap()
+   
+   }
+   
+        
+   
+   function start()
+   {
+    window.location.href = "testwebpage.html";
+    document.querySelectorAll('.image').forEach(function(img) {img.style.display = 'block';});
+   document.getElementById("startid").style.display = 'none';
+   document.getElementById("stopid").style.display = 'block';
+   
+   GazeCloudAPI.StartEyeTracking(); 
+   
+   if(false)
+   GazeCloudAPI.SetFps(15);
+   }
+   
+   function stop()
+   {
+   
+   document.getElementById("startid").style.display = 'block';
+   document.getElementById("stopid").style.display = 'none';
+   GazeCloudAPI.StopEyeTracking();
+   }
+   
+        const captureButton = document.getElementById('capturePage');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const screenshotImage = document.getElementById('screenshotImage');
+
+        captureButton.addEventListener('click', () => {
+            const pageWidth = document.documentElement.scrollWidth;
+            const pageHeight = document.documentElement.scrollHeight;
+            
+            // Set canvas size to match page size
+            canvas.width = pageWidth;
+            canvas.height = pageHeight;
+
+            // Use the HTML2Canvas library to capture a screenshot of the current state of the page
+            html2canvas(document.body, {
+                width: pageWidth,
+                height: pageHeight
+            }).then(function(canvas) {
+                // Convert canvas to image data
+                screenshotImage.src = canvas.toDataURL("image/png");
+            });
+        });
+         </script>
+      </head>
+      
+   
+   <div style="text-align: center;display: block; width: 100%" >
+   <br style="margin: auto;  width: 60%;">
+   <div  style='background-color: lightblue;'>
+         <button  id = 'startid' class = 'buttonStartEyeTrack'  type="button" onclick="start()" >Open Page</button>
+         <button  id = 'stopid'  style= 'display:none' class = 'buttonStartEyeTrack'   type="button" onclick="stop();">Stop</button>
+         
+            <p >  
+              
+            <p id = "GazeData" > </p>
+            <p id = "HeadPhoseData" > </p>
+            <p id = "HeadRotData" > </p>
+            </p>
+         </div>
+   
+         <div id ="gaze" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>
+   
+   <label for="ShowHeatMapId" >   
+   
+   </label>     
+    </div>
+    <style>
+
+
+        .image {
+            position: fixed;
+            width: 150px;
+            height: 150px;
+            display: none;
+        }
+
+        .top-left {
+            top: 0;
+            left: 0;
+        }
+
+        .top-right {
+            top: 0;
+            right: 0;
+        }
+
+        .bottom-left {
+            bottom: 0;
+            left: 0;
+        }
+
+        .bottom-right {
+            bottom: 0;
+            right: 0;
+        }
+    </style>
+    <body>
+        <div class="container">
+            <img  src="image2.jpg" alt="Top Right Image" class="image top-right">
+            <img  src="image3.jpg" alt="Bottom Left Image" class="image bottom-left">
+            <img  src="image4.jpg" alt="Bottom Right Image" class="image bottom-right">
+        </div>
+    </body>
+
+    <!-- <p>Use the above frame to interact with the software and see how it works.</p> -->
+</body>
+</html>
