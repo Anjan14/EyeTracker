@@ -82,42 +82,42 @@
 	padding: 0;
 	box-sizing: border-box;
   }
-  
+
   body {
 	font-family: Arial, sans-serif;
 	line-height: 1.6;
 	background-color: #f4f4f4;
   }
-  
+
   header {
-	
+
 	color: #fff;
 	padding: 10px 0;
 	height: 40 px;
 	justify-content: space-between;
 	align-items: center;
   }
-  
+
    .logo h1 {
 	margin-left: 20px;
   }
-  
+
   .logo ul {
 	display: flex;
 	list-style: none;
 	margin-right: 20px;
   }
-  
+
   .logo li {
 	margin-left: 20px;
   }
-  
+
   .logo a {
 	color: #fff;
 	text-decoration: none;
 	font-size: 1.1em;
   }
-  
+
   .hero {
 	background: orange;
 	color: white;
@@ -125,31 +125,31 @@
 	padding: 0px 0;
 	margin: 0px 0;
   }
-  
+
   .hero h2 {
 	font-size: 2.5em;
   }
-  
+
   .hero p {
 	font-size: 1.2em;
   }
-  
+
   .products {
 	margin: 20px;
   }
-  
+
   .products h2 {
 	text-align: center;
 	margin-bottom: 20px;
 	font-size: 2em;
   }
-  
+
   .product-grid {
 	display: flex;
 	justify-content: space-around;
 	flex-wrap: wrap;
   }
-  
+
   .product {
 	background: white;
 	border: 1px solid #ddd;
@@ -158,22 +158,22 @@
 	text-align: center;
 	margin-bottom: 20px;
   }
-  
+
   .product img {
 	max-width: 100%;
 	height: auto;
   }
-  
+
   .product h3 {
 	font-size: 1.2em;
 	margin-bottom: 10px;
   }
-  
+
   .product p {
 	font-size: 1.1em;
 	margin-bottom: 10px;
   }
-  
+
   .product button {
 	padding: 10px 20px;
 	background-color: #333;
@@ -181,7 +181,7 @@
 	border: none;
 	cursor: pointer;
   }
-  
+
   .footer-2 {
 	background-color: orange;
 	color: #fff;
@@ -189,18 +189,18 @@
 	padding: 10px 0;
 	margin-top: 20px;
   }
-  
+
   .footer-2 nav ul {
 	list-style: none;
 	display: flex;
 	justify-content: center;
 	margin-top: 10px;
   }
-  
+
   .footer-2 nav ul li {
 	margin-left: 15px;
   }
-  
+
   .footer-2 nav ul li a {
 	color: #fff;
 	text-decoration: none;
@@ -213,15 +213,15 @@
     margin-top: 0px;
     margin-bottom: 0px;
   }
- 
+
     </style>
     <script src="https://api.gazerecorder.com/GazeCloudAPI.js?v=1.2" ></script>
-        
+
     <script src="https://api.gazerecorder.com/heatmapLive.js" ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body><div class="button-container">
-   
+
     <button  id = 'startid' class = 'buttonStartEyeTrack'  type="button" onclick="start()" >Start eye tracking</button>
     <button  id = 'stopid'  style= 'display:none' class = 'buttonStartEyeTrack'   type="button" onclick="stop();">Stop</button>
 
@@ -230,34 +230,34 @@
     <label for="ShowHeatMapId" >
    Show heatmap
      <input id="ShowHeatMapId" type="checkbox" checked="" onclick='handleClickHeatMap(this);'>
-</div> 
+</div>
 <img id="screenshotImage"  style=" max-width:100%;" />
     <script>
 
     </script>
-   
-    
-        <script type = "text/javascript" >     
-            function PlotGaze(GazeData) {
-            
 
-   
-   
+
+        <script type = "text/javascript" >
+            function PlotGaze(GazeData) {
+
+
+
+
    if( !document.getElementById("ShowHeatMapId").checked) // gaze plot
    {
             var x = GazeData.docX;
             var y = GazeData.docY;
-            
+
             var gaze = document.getElementById("gaze");
             x -= gaze .clientWidth/2;
             y -= gaze .clientHeight/2;
-            
-            
-   
+
+
+
        gaze.style.left = x + "px";
        gaze.style.top = y + "px";
-   
-            
+
+
             if(GazeData.state != 0)
             {
                 if( gaze.style.display  == 'block')
@@ -268,58 +268,58 @@
                 if( gaze.style.display  == 'none')
                 gaze  .style.display = 'block';
             }
-            
+
    }
             }
-            
+
             //////set callbacks/////////
-      
-   
+
+
    window.addEventListener("load", function() {
             start();
             GazeCloudAPI.OnCalibrationComplete =function(){ShowHeatMap(); console.log('gaze Calibration Complete')  }
             GazeCloudAPI.OnCamDenied =  function(){ console.log('camera  access denied')  }
             GazeCloudAPI.OnError =  function(msg){ console.log('err: ' + msg)  }
             GazeCloudAPI.UseClickRecalibration = true;
-              GazeCloudAPI.OnResult = PlotGaze; 
+              GazeCloudAPI.OnResult = PlotGaze;
             });
-   
-   
+
+
    function handleClickHeatMap(cb) {
-    
+
    if( cb.checked)
    {
        ShowHeatMap();
         document.getElementById("gaze").style.display = 'none';
    ;
-   
+
    }
    else
         RemoveHeatMap()
-   
+
    }
-   
-        
-   
+
+
+
    function start()
    {
    document.getElementById("startid").style.display = 'none';
    document.getElementById("stopid").style.display = 'block';
-   
-   GazeCloudAPI.StartEyeTracking(); 
-   
+
+   GazeCloudAPI.StartEyeTracking();
+
    if(false)
    GazeCloudAPI.SetFps(15);
    }
-   
+
    function stop()
    {
-   
+
    document.getElementById("startid").style.display = 'block';
    document.getElementById("stopid").style.display = 'none';
    GazeCloudAPI.StopEyeTracking();
    }
-   
+
         const captureButton = document.getElementById('capturePage');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -328,7 +328,7 @@
         captureButton.addEventListener('click', () => {
             const pageWidth = document.documentElement.scrollWidth;
             const pageHeight = document.documentElement.scrollHeight;
-            
+
             // Set canvas size to match page size
             canvas.width = pageWidth;
             canvas.height = pageHeight;
@@ -344,24 +344,24 @@
         });
          </script>
       </head>
-      
-   
-   
-   
+
+
+
+
          <div id ="gaze" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>
-   
-   
-   
-   
-   </label>     
+
+
+
+
+   </label>
     </div>
 
     <header class="logo">
         <div >
-          
+
         </div>
         <nav>
-            
+
           <ul><h1>Amazon</h1>
             <li><a href="#">Home</a></li>
             <li><a href="#">Shop</a></li>
@@ -371,14 +371,14 @@
           </ul>
         </nav>
       </header>
-    
+
       <!-- Main Content -->
       <main>
         <section class="hero">
           <h2>Welcome To Amazon</h2>
           <p>Work Hard, Have Fun, Make History.</p>
         </section>
-    
+
         <!-- Product Showcase -->
         <section class="products">
           <h2 class="second">Featured Products</h2>
@@ -404,7 +404,7 @@
           </div>
         </section>
       </main>
-    
+
       <!-- Footer -->
       <footer class="footer-2">
         <p>&copy; 2024 Amazon. All Rights Reserved.</p>
