@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Eye Tracking Heatmap</title>
+    <style>
+        .buttonStartEyeTrack {
+            background-color: rgb(255, 102, 0);
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 0px;
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <button id="startid" class="buttonStartEyeTrack" type="button" onclick="start()">Start eye tracking</button>
+        <button id="stopid" style="display:none" class="buttonStartEyeTrack" type="button" onclick="stop();">Stop</button>
+        <button id="capturePage">Capture Page</button>
+        <button id="saveHeatmap">Save Heatmap</button>
+        <canvas id="canvas" style="display:none;"></canvas>
+        <label for="ShowHeatMapId">
+            Show heatmap
+            <input id="ShowHeatMapId" type="checkbox" checked="" onclick='handleClickHeatMap(this);'>
+        </label>
+    </div>
+    <img id="screenshotImage" style="max-width:100%;" />
+    <script src="popup.js"></script>
+</body>
+</html>
